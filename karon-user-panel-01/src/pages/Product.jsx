@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { products } from "../data/mockData";
 import { motion } from "framer-motion";
 import {
   ShoppingCart,
@@ -14,7 +13,7 @@ import {
 } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import apiClient from "../utils/apiClient";
-import { BACKEND_BASE_URL, formatINR } from "../utils/utils";
+import { formatINR, getPublicImageUrl } from "../utils/utils";
 
 const Product = () => {
   const { id } = useParams();
@@ -22,13 +21,13 @@ const Product = () => {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("description");
 
-  // const [product, setProduct] = useState(null);
+  const [product, setProduct] = useState(null);
 
-  // useEffect(() => {
-  //   apiClient.get(`/products/${id}`).then((res) => setProduct(res.data.data));
-  // }, []);
+  useEffect(() => {
+    apiClient.get(`/products/${id}`).then((res) => setProduct(res.data.data));
+  }, []);
 
-  const product = products[1];
+  console.log(product);
 
   if (!product)
     return <div className="p-20 text-center">Product not found</div>;
@@ -58,11 +57,11 @@ const Product = () => {
           className="rounded-3xl overflow-hidden shadow-2xl relative group"
         >
           <img
-            src={`${BACKEND_BASE_URL}/public/${product.image}`}
+            src={getPublicImageUrl(product.image)}
             alt={product.name}
             className="w-full aspect-square object-cover"
           />
-          <button className="absolute top-6 right-6 btn btn-circle btn-ghost bg-white/20 backdrop-blur-md border-none shadow-lg text-white hover:text-red-500">
+          <button className="absolute top-6 right-6 btn btn-circle btn-ghost bg-white/20 backdrop-blur-md border-none shadow-lg text-red-500/30 hover:text-red-500">
             <Heart size={24} />
           </button>
         </motion.div>
@@ -89,9 +88,20 @@ const Product = () => {
                 (120 Reviews)
               </span>
             </div>
-            <p className="text-4xl font-black text-primary mb-8">
-              {formatINR(product.price)}
-            </p>
+            {product.offer_price ? (
+              <>
+                <p className="text-2xl mb-2 text-base-content/60">
+                  <del>{formatINR(product.price)}</del>
+                </p>
+                <p className="text-4xl font-black text-primary mb-8">
+                  {formatINR(product.offer_price)}
+                </p>
+              </>
+            ) : (
+              <p className="text-4xl font-black text-primary mb-8">
+                {formatINR(product.price)}
+              </p>
+            )}
             <p className="text-lg opacity-80 mb-10 leading-relaxed">
               {product.description}
             </p>

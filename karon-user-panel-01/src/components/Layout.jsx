@@ -1,12 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { ShoppingCart, User, Menu, Search, X } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
 import ScrollToTop from "./ScrollToTop";
+import apiClient from "../utils/apiClient";
 
 const Navbar = () => {
   const { totalItems } = useCart();
+
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    apiClient.get("/categories").then((res) => setCategories(res.data.data));
+  }, []);
 
   // Helper to close dropdowns by blurring active element
   const closeDropdown = () => {
@@ -34,26 +41,16 @@ const Navbar = () => {
             <li>
               <span className="font-bold">Categories</span>
               <ul>
-                <li>
-                  <Link to="/category/electronics" onClick={closeDropdown}>
-                    Electronics
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/category/fashion" onClick={closeDropdown}>
-                    Fashion
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/category/home" onClick={closeDropdown}>
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/category/sports" onClick={closeDropdown}>
-                    Sports
-                  </Link>
-                </li>
+                {categories.map((category) => (
+                  <li key={category.id}>
+                    <Link
+                      to={`/category/${category.id}`}
+                      onClick={closeDropdown}
+                    >
+                      {category.name}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </li>
           </ul>
@@ -68,7 +65,9 @@ const Navbar = () => {
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1 overflow-visible items-center">
           <li>
-            <Link to="/" className="flex items-center py-2">Home</Link>
+            <Link to="/" className="flex items-center py-2">
+              Home
+            </Link>
           </li>
           <li className="dropdown dropdown-hover">
             <label
@@ -91,26 +90,11 @@ const Navbar = () => {
               className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 mt-0 pt-2"
             >
               <div className="bg-base-100 rounded-box shadow-xl p-2 border border-base-200">
-                <li>
-                  <Link to="/category/electronics" onClick={closeDropdown}>
-                    Electronics
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/category/fashion" onClick={closeDropdown}>
-                    Fashion
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/category/home" onClick={closeDropdown}>
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/category/sports" onClick={closeDropdown}>
-                    Sports
-                  </Link>
-                </li>
+                {categories.map((category) => (
+                  <li key={category.id}>
+                    <Link to={`/category/${category.id}`}>{category.name}</Link>
+                  </li>
+                ))}
               </div>
             </ul>
           </li>

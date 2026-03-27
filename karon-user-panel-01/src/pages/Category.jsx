@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ShoppingBag, ChevronRight } from "lucide-react";
 import apiClient from "../utils/apiClient";
 import { formatINR } from "../utils/utils";
+import ProductCard from "../components/ProductCard";
 
 const Category = () => {
   const { id } = useParams();
@@ -19,7 +20,7 @@ const Category = () => {
     apiClient
       .get(`/categories/${id}`)
       .then((res) => setCurrentCategory(res.data.data));
-  }, []);
+  }, [id]);
 
   if (!currentCategory)
     return <div className="p-20 text-center">Category not found</div>;
@@ -87,6 +88,8 @@ const Category = () => {
           </motion.div>
         ))}
       </div> */}
+
+      <ProductCard products={categoryProducts} />
 
       {categoryProducts.length === 0 && (
         <div className="text-center py-20">

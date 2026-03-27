@@ -10,3 +10,6 @@ export function formatINR(price) {
 }
 
 export const BACKEND_BASE_URL = "http://localhost:3001";
+
+export const getPublicImageUrl = (imgname) =>
+  imgname !== "" ? `${BACKEND_BASE_URL}/public/${imgname}` : null;

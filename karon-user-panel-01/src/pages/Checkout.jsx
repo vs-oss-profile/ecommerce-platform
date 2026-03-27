@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { CreditCard, Truck, ShoppingBag, CheckCircle2 } from "lucide-react";
+import { formatINR, getPublicImageUrl } from "../utils/utils";
 
 const Checkout = () => {
   const { cart, totalPrice, clearCart } = useCart();
@@ -215,7 +216,7 @@ const Checkout = () => {
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 bg-white rounded-lg shrink-0 overflow-hidden border">
                       <img
-                        src={item.image}
+                        src={getPublicImageUrl(item.image)}
                         alt={item.name}
                         className="w-full h-full object-cover"
                       />
@@ -228,7 +229,7 @@ const Checkout = () => {
                     </div>
                   </div>
                   <span className="font-bold text-sm">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    {formatINR(item.price * item.quantity)}
                   </span>
                 </div>
               ))}
@@ -236,7 +237,7 @@ const Checkout = () => {
             <div className="h-px bg-base-300 my-6"></div>
             <div className="flex justify-between text-2xl font-black mb-8">
               <span>Total</span>
-              <span className="text-primary">${totalPrice.toFixed(2)}</span>
+              <span className="text-primary">{formatINR(totalPrice)}</span>
             </div>
             <button
               type="submit"
